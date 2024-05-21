@@ -33,5 +33,5 @@ export interface Student {
   guardian: Guardian;
   localGuardian: LocalGuardian;
   profileImg?: string;
-  isActive: 'acive' | 'blocked';
+  isActive: 'active' | 'blocked';
 }
