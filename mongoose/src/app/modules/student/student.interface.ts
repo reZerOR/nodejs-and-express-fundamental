@@ -23,6 +23,7 @@ export type LocalGuardian = {
 };
 export interface Student {
   id: string;
+  password: string
   name: UserName;
   gender: 'male' | 'female' | 'other';
   dateOfBirth: string;
@@ -36,6 +37,7 @@ export interface Student {
   localGuardian: LocalGuardian;
   profileImg?: string;
   isActive: 'active' | 'blocked';
+  isDeleted: boolean
 }
 
 export interface StudentMethod extends Model<Student> {

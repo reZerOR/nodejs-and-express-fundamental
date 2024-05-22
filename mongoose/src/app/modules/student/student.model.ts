@@ -8,6 +8,9 @@ import {
   // StudentMethods,
   UserName,
 } from './student.interface';
+import bcrypt from 'bcrypt';
+import config from '../../config';
+import { boolean } from 'zod';
 
 const userNameSchema = new Schema<UserName>({
   firstName: {
@@ -50,6 +53,7 @@ const localGuardianSchema = new Schema<LocalGuardian>({
 });
 const studentSchema = new Schema<Student, StudentMethod>({
   id: { type: String, required: true, unique: true },
+  password: { type: String, required: true, maxlength: 20 },
   name: { type: userNameSchema, required: true },
   gender: {
     type: String,
@@ -70,13 +74,41 @@ const studentSchema = new Schema<Student, StudentMethod>({
   localGuardian: { type: localGuardianSchema, required: true },
   profileImg: { type: String },
   isActive: { type: String, enum: ['active', 'blocked'], default: 'active' },
+  isDeleted: { type: Boolean, default: false },
+});
+// virtual
+
+
+
+
+// middlewere
+studentSchema.pre('save', async function (next) {
+  console.log(this, 'pre hook: we will save data');
+  //hasing password
+  this.password = await bcrypt.hash(
+    this.password,
+    Number(config.bcrypt_salt_rounds)
+  );
+  next();
+});
+studentSchema.post('save', function (doc, next) {
+  doc.password = '';
+  console.log(this, 'pre hook: we saved data');
+  next();
 });
 
-studentSchema.statics.isUserExists = async (id: string)=>{
-  const exitingUser = await StudentModel.findOne({id})
-  return exitingUser
-}
-
+studentSchema.pre('find', function(next){
+  this.find({isDeleted: {$ne: true}})
+  next()
+})
+studentSchema.pre('findOne', function(next){
+  this.find({isDeleted: {$ne: true}})
+  next()
+})
+studentSchema.statics.isUserExists = async (id: string) => {
+  const exitingUser = await StudentModel.findOne({ id });
+  return exitingUser;
+};
 
 // for creating instance model
 
@@ -85,6 +117,7 @@ studentSchema.statics.isUserExists = async (id: string)=>{
 //   return exitingUser
 // }
 
-
-
-export const StudentModel = model<Student, StudentMethod>('Student', studentSchema);
+export const StudentModel = model<Student, StudentMethod>(
+  'Student',
+  studentSchema
+);
