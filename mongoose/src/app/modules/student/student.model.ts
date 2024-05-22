@@ -3,23 +3,26 @@ import {
   Guardian,
   LocalGuardian,
   Student,
+  StudentMethod,
+  // StudentMethodModel,
+  // StudentMethods,
   UserName,
 } from './student.interface';
 
 const userNameSchema = new Schema<UserName>({
   firstName: {
     type: String,
-    trim: true,
-    maxlength: [10, 'firstname cannot be more than 10 char'],
-    required: true,
-    validate: {
-      validator: function (value: string) {
-        const firstName =
-          value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
-        return firstName === value;
-      },
-      message: "{VALUE} is not capitalize format"
-    },
+    // trim: true,
+    // maxlength: [10, 'firstname cannot be more than 10 char'],
+    // required: true,
+    // validate: {
+    //   validator: function (value: string) {
+    //     const firstName =
+    //       value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
+    //     return firstName === value;
+    //   },
+    //   message: "{VALUE} is not capitalize format"
+    // },
   },
   middleName: {
     type: String,
@@ -45,12 +48,12 @@ const localGuardianSchema = new Schema<LocalGuardian>({
   address: { type: String, required: true },
   contactNo: { type: String, required: true },
 });
-const studentSchema = new Schema<Student>({
+const studentSchema = new Schema<Student, StudentMethod>({
   id: { type: String, required: true, unique: true },
   name: { type: userNameSchema, required: true },
   gender: {
     type: String,
-    enum: ['male', 'female'],
+    enum: ['male', 'female', 'other'],
     required: true,
   },
   email: { type: String, required: true, unique: true },
@@ -69,4 +72,19 @@ const studentSchema = new Schema<Student>({
   isActive: { type: String, enum: ['active', 'blocked'], default: 'active' },
 });
 
-export const StudentModel = model<Student>('Student', studentSchema);
+studentSchema.statics.isUserExists = async (id: string)=>{
+  const exitingUser = await StudentModel.findOne({id})
+  return exitingUser
+}
+
+
+// for creating instance model
+
+// studentSchema.methods.isUserExists = async (id:string) =>{
+//   const exitingUser = await StudentModel.findOne({id})
+//   return exitingUser
+// }
+
+
+
+export const StudentModel = model<Student, StudentMethod>('Student', studentSchema);

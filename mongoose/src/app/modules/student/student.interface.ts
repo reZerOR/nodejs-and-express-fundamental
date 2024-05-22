@@ -1,3 +1,5 @@
+import { Model } from 'mongoose';
+
 export type Guardian = {
   fatherName: string;
   fatherOccupation: string;
@@ -22,7 +24,7 @@ export type LocalGuardian = {
 export interface Student {
   id: string;
   name: UserName;
-  gender: 'male' | 'female';
+  gender: 'male' | 'female' | 'other';
   dateOfBirth: string;
   contactNo: string;
   email: string;
@@ -35,3 +37,19 @@ export interface Student {
   profileImg?: string;
   isActive: 'active' | 'blocked';
 }
+
+export interface StudentMethod extends Model<Student> {
+  isUserExists(id: string): Promise<string | null>;
+}
+
+// for creating instance model
+
+// export type StudentMethods = {
+//   isUserExists(id: string): Promise<Student| null>;
+// };
+
+// export type StudentMethodModel = Model<
+//   Student,
+//   Record<string, never>,
+//   StudentMethods
+// >;
