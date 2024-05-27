@@ -1,7 +1,13 @@
 import { NextFunction, Request, Response } from 'express';
 import { UserServices } from './user.service';
+import { sendResponse } from '../../utiles/sendResponse';
+import httpStatus from 'http-status';
 
-const createStudent = async (req: Request, res: Response, next: NextFunction) => {
+const createStudent = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { password, student: studentData } = req.body;
     const result = await UserServices.createStudentIntoDB(
@@ -9,18 +15,14 @@ const createStudent = async (req: Request, res: Response, next: NextFunction) =>
       studentData
     );
 
-    res.status(200).json({
-      success: true,
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
       message: 'Student is created succesfully',
       data: result,
+      success: true,
     });
   } catch (error) {
-    // res.status(400).json({
-    //   success: false,
-    //   message: (error as any).message || 'not valid json',
-    //   error: error,
-    // });
-    next(error)
+    next(error);
   }
 };
 export const userController = {
