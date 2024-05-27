@@ -8,24 +8,10 @@ import {
   // StudentMethods,
   UserName,
 } from './student.interface';
-import bcrypt from 'bcrypt';
-import config from '../../config';
-import { boolean } from 'zod';
 
 const userNameSchema = new Schema<UserName>({
   firstName: {
     type: String,
-    // trim: true,
-    // maxlength: [10, 'firstname cannot be more than 10 char'],
-    // required: true,
-    // validate: {
-    //   validator: function (value: string) {
-    //     const firstName =
-    //       value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
-    //     return firstName === value;
-    //   },
-    //   message: "{VALUE} is not capitalize format"
-    // },
   },
   middleName: {
     type: String,
@@ -51,9 +37,15 @@ const localGuardianSchema = new Schema<LocalGuardian>({
   address: { type: String, required: true },
   contactNo: { type: String, required: true },
 });
+
 const studentSchema = new Schema<Student, StudentMethod>({
   id: { type: String, required: true, unique: true },
-  password: { type: String, required: true, maxlength: 20 },
+  user: {
+    type: Schema.Types.ObjectId,
+    required: [true, 'user id is required'],
+    unique: true,
+    ref: 'User',
+  },
   name: { type: userNameSchema, required: true },
   gender: {
     type: String,
@@ -73,49 +65,25 @@ const studentSchema = new Schema<Student, StudentMethod>({
   guardian: { type: guardianSchema, required: true },
   localGuardian: { type: localGuardianSchema, required: true },
   profileImg: { type: String },
-  isActive: { type: String, enum: ['active', 'blocked'], default: 'active' },
   isDeleted: { type: Boolean, default: false },
 });
 // virtual
 
-
-
-
 // middlewere
-studentSchema.pre('save', async function (next) {
-  console.log(this, 'pre hook: we will save data');
-  //hasing password
-  this.password = await bcrypt.hash(
-    this.password,
-    Number(config.bcrypt_salt_rounds)
-  );
-  next();
-});
-studentSchema.post('save', function (doc, next) {
-  doc.password = '';
-  console.log(this, 'pre hook: we saved data');
-  next();
-});
 
-studentSchema.pre('find', function(next){
-  this.find({isDeleted: {$ne: true}})
-  next()
-})
-studentSchema.pre('findOne', function(next){
-  this.find({isDeleted: {$ne: true}})
-  next()
-})
+
+studentSchema.pre('find', function (next) {
+  this.find({ isDeleted: { $ne: true } });
+  next();
+});
+studentSchema.pre('findOne', function (next) {
+  this.find({ isDeleted: { $ne: true } });
+  next();
+});
 studentSchema.statics.isUserExists = async (id: string) => {
   const exitingUser = await StudentModel.findOne({ id });
   return exitingUser;
 };
-
-// for creating instance model
-
-// studentSchema.methods.isUserExists = async (id:string) =>{
-//   const exitingUser = await StudentModel.findOne({id})
-//   return exitingUser
-// }
 
 export const StudentModel = model<Student, StudentMethod>(
   'Student',

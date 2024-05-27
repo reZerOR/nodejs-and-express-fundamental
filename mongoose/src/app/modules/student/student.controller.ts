@@ -1,31 +1,11 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { StudentServices } from './student.service';
-import {z} from "zod"
-import studentValidationSchema from './student.validation';
 
-
-const createStudent = async (req: Request, res: Response) => {
-  try {
-    const { student: studentData } = req.body;
-
-    const zodParsedData = studentValidationSchema.parse(studentData)
-    const result = await StudentServices.createStudentIntoDB(zodParsedData);
-
-    res.status(200).json({
-      success: true,
-      message: 'Student is created succesfully',
-      data: result,
-    });
-  } catch (error) {
-    res.status(400).json({
-      success: false,
-      message: (error as any).message || "not valid json",
-      error: error,
-    });
-  }
-};
-
-const getAllStudents = async (req: Request, res: Response) => {
+const getAllStudents = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const result = await StudentServices.getAllStudentsFromDB();
     res.status(200).json({
@@ -34,10 +14,15 @@ const getAllStudents = async (req: Request, res: Response) => {
       data: result,
     });
   } catch (error) {
-    console.log(error);
+    next(error);
   }
 };
-const getSingleStudents = async (req: Request, res: Response) => {
+
+const getSingleStudents = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { studentId } = req.params;
     const result = await StudentServices.getSingleStudentsFromDB(studentId);
@@ -47,10 +32,15 @@ const getSingleStudents = async (req: Request, res: Response) => {
       data: result,
     });
   } catch (error) {
-    console.log(error);
+    next(error);
   }
 };
-const deleteSingleStudents = async (req: Request, res: Response) => {
+
+const deleteSingleStudents = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { studentId } = req.params;
     const result = await StudentServices.deleteSingleStudentsFromDB(studentId);
@@ -60,12 +50,11 @@ const deleteSingleStudents = async (req: Request, res: Response) => {
       data: result,
     });
   } catch (error) {
-    console.log(error);
+    next(error);
   }
 };
 export const StudentController = {
-  createStudent,
   getAllStudents,
   getSingleStudents,
-  deleteSingleStudents
+  deleteSingleStudents,
 };
