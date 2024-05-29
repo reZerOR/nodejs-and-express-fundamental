@@ -4,7 +4,6 @@ import { globalErrorHandler } from './app/middlwares/globalErrorHandler';
 import { notFound } from './app/middlwares/notFound';
 import router from './app/routes';
 const app: Application = express();
-const port = 3000;
 
 app.use(express.json());
 app.use(cors());
