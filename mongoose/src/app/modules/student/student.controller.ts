@@ -1,10 +1,10 @@
-import { NextFunction, Request, RequestHandler, Response } from 'express';
+import { RequestHandler } from 'express';
 import { StudentServices } from './student.service';
 import { sendResponse } from '../../utiles/sendResponse';
 import httpStatus from 'http-status';
 import { catchAsync } from '../../utiles/catchAsync';
 
-const getAllStudents: RequestHandler = catchAsync(async (req, res, next) => {
+const getAllStudents: RequestHandler = catchAsync(async (req, res) => {
   const result = await StudentServices.getAllStudentsFromDB();
   sendResponse(res, {
     success: true,
