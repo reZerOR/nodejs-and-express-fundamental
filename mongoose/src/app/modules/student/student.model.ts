@@ -53,7 +53,7 @@ const studentSchema = new Schema<Student, StudentMethod>({
     required: true,
   },
   email: { type: String, required: true, unique: true },
-  dateOfBirth: { type: String },
+  dateOfBirth: { type: Date },
   contactNo: { type: String, required: true },
   emergencyContactNo: { type: String, required: true },
   bloodGroup: {

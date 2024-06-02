@@ -27,7 +27,7 @@ export interface Student {
   password: string;
   name: UserName;
   gender: 'male' | 'female' | 'other';
-  dateOfBirth: string;
+  dateOfBirth: Date;
   contactNo: string;
   email: string;
   emergencyContactNo: string;
