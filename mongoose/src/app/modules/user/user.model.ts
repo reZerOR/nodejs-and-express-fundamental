@@ -3,10 +3,9 @@ import { TUser } from './user.interface';
 import config from '../../config';
 import bcrypt from 'bcrypt';
 
-
 const userSchema = new Schema<TUser>(
   {
-    id: { type: String, required: true },
+    id: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     role: {
       type: String,
@@ -30,7 +29,6 @@ const userSchema = new Schema<TUser>(
     timestamps: true,
   }
 );
-
 
 userSchema.pre('save', async function (next) {
   console.log(this, 'pre hook: we will save data');

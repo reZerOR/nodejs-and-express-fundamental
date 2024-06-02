@@ -1,4 +1,4 @@
-import { Schema, model, connect } from 'mongoose';
+import { Schema, model, connect, Types } from 'mongoose';
 import {
   Guardian,
   LocalGuardian,
@@ -53,7 +53,7 @@ const studentSchema = new Schema<Student, StudentMethod>({
     required: true,
   },
   email: { type: String, required: true, unique: true },
-  dateOfBirth: { type: Date },
+  dateOfBirth: { type: String },
   contactNo: { type: String, required: true },
   emergencyContactNo: { type: String, required: true },
   bloodGroup: {
@@ -65,6 +65,10 @@ const studentSchema = new Schema<Student, StudentMethod>({
   guardian: { type: guardianSchema, required: true },
   localGuardian: { type: localGuardianSchema, required: true },
   profileImg: { type: String },
+  admissionSemester: {
+    type: Schema.Types.ObjectId,
+    ref: 'AcademicSemester'
+  },
   isDeleted: { type: Boolean, default: false },
 });
 // virtual
