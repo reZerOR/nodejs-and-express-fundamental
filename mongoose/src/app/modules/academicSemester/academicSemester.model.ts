@@ -54,7 +54,7 @@ academicSemesterSchema.pre('save', async function (next) {
     year: this.year,
   });
 
-  if (!isSemesterExist) {
+  if (isSemesterExist) {
     throw new Error('Semester already exists');
   }
   next();
