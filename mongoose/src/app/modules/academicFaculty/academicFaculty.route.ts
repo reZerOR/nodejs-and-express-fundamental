@@ -13,7 +13,7 @@ router.post(
 
 router.get('/:facultyId', academicFacultyController.getSingleAcademicFaculty);
 router.patch(
-  '/facultyId',
+  '/:facultyId',
   validateRequest(AcademicFacultyValidation.academicFacultyValidationSchema),
   academicFacultyController.updateAcademicFaculty
 );
