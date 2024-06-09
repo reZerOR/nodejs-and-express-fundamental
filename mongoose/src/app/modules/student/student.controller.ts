@@ -35,7 +35,25 @@ const deleteSingleStudents: RequestHandler = async (req, res, next) => {
     const result = await StudentServices.deleteSingleStudentsFromDB(studentId);
     sendResponse(res, {
       success: true,
-      message: 'Student is deleted successfully succesfully',
+      message: 'Student is deleted successfully',
+      statusCode: httpStatus.OK,
+      data: result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+const updateSingleStudent: RequestHandler = async (req, res, next) => {
+  try {
+    const { studentId } = req.params;
+    const { student } = req.body;
+    const result = await StudentServices.updatedSingleStudentsFromDB(
+      studentId,
+      student
+    );
+    sendResponse(res, {
+      success: true,
+      message: 'Student is updated successfully',
       statusCode: httpStatus.OK,
       data: result,
     });
@@ -47,4 +65,5 @@ export const StudentController = {
   getAllStudents,
   getSingleStudents,
   deleteSingleStudents,
+  updateSingleStudent,
 };

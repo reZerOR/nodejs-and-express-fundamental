@@ -67,18 +67,17 @@ const studentSchema = new Schema<Student, StudentMethod>({
   profileImg: { type: String },
   admissionSemester: {
     type: Schema.Types.ObjectId,
-    ref: 'AcademicSemester'
+    ref: 'AcademicSemester',
   },
   academicDepartment: {
     type: Schema.Types.ObjectId,
-    ref: 'AcademicDepartment'
+    ref: 'AcademicDepartment',
   },
   isDeleted: { type: Boolean, default: false },
 });
 // virtual
 
 // middlewere
-
 
 studentSchema.pre('find', function (next) {
   this.find({ isDeleted: { $ne: true } });
