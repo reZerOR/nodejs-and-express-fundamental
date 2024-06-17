@@ -81,7 +81,7 @@ const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
 };
 
 const getSingleStudentsFromDB = async (id: string) => {
-  const result = await StudentModel.findOne({ id });
+  const result = await StudentModel.findById(id);
   return result;
 };
 const updatedSingleStudentsFromDB = async (
@@ -109,7 +109,7 @@ const updatedSingleStudentsFromDB = async (
     }
   }
 
-  const result = await StudentModel.findOneAndUpdate({ id }, modifiedData, {
+  const result = await StudentModel.findByIdAndUpdate(id, modifiedData, {
     new: true,
     runValidators: true,
   });
@@ -128,8 +128,8 @@ const deleteSingleStudentsFromDB = async (id: string) => {
 
   try {
     session.startTransaction();
-    const deletedStudent = await StudentModel.findOneAndUpdate(
-      { id },
+    const deletedStudent = await StudentModel.findByIdAndUpdate(
+      id,
       { isDeleted: true },
       { new: true, session }
     );
@@ -140,9 +140,10 @@ const deleteSingleStudentsFromDB = async (id: string) => {
 
     console.log('1');
     console.log(deletedStudent);
+    const userId = deletedStudent.user
 
-    const deletedUser = await UserModel.findOneAndUpdate(
-      { id },
+    const deletedUser = await UserModel.findByIdAndUpdate(
+      userId,
       { isDeleted: true },
       { new: true, session }
     );
